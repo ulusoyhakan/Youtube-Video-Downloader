@@ -104,13 +104,15 @@ class Application(youtube):
         Url = st.text_input("Video Adresini Giriniz ↓")
         if self.is_youtube_url(Url):
             self.youtube_object(Url)
-            self.download_options()         
-        elif Url and (not self.is_youtube_url):
+            self.download_options()
+            st.video(Url)
+            
+        elif Url and (not self.is_youtube_url(Url)):
             st.markdown('<p style="color:red;">girilen adres bir youtube linki değil!!</p>', unsafe_allow_html=True)
 
 
     def audio_options(self): 
-        self.audio_choice = st.selectbox("Ses Kalite ayarını seçin:",
+        self.audio_choice = st.selectbox("Ses Kalite Ayarı",
                                          self.audio_quality_options().keys())
         return self.audio_choice
 
@@ -126,12 +128,20 @@ class Application(youtube):
             if self.selection == "mp4(video)":
                 self.video_options()
                 self.audio_options()
+                print(self.video_choice)
+                print(self.audio_choice)
                 
-                if self.stream_audio_options.get(self.audio_choice) != None and \
-                    self.stream_video_options.get(self.video_choice) != None:
-                    
-                    self.video_choice = self.stream_video_options.get(self.video_choice)
-                    self.audio_choice = self.stream_audio_options.get(self.audio_choice)
+                downloadButton = st.button('indir', type='secondary', icon=":material/download:")
+                
+                if downloadButton:
+                    pass
+                
+                # if self.stream_audio_options.get(self.audio_choice) != None and \
+                #     self.stream_video_options.get(self.video_choice) != None:
+                
+                
+                #     self.video_choice = self.stream_video_options.get(self.video_choice)
+                #     self.audio_choice = self.stream_audio_options.get(self.audio_choice)
 
                     # self.download(self.video_choice,F"{os.getcwd()}/Video")
                     # self.download(self.audio_choice,F"{os.getcwd()}/Audio")
