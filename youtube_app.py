@@ -125,37 +125,31 @@ class Application(youtube):
             "indirilecek dosya türünün ve kalite ayarlarının seçimi"
 
             self.selection = st.selectbox("Dosya İndirme Seçenekleri", ('mp4(video)', 'mp3(ses)'))
+
             if self.selection == "mp4(video)":
                 self.video_options()
                 self.audio_options()
-                print(self.video_choice)
-                print(self.audio_choice)
                 
+                self.video_itag_choice = self.stream_video_options.get(self.video_choice)
+                self.audio_itag_choice = self.stream_audio_options.get(self.audio_choice)
                 downloadButton = st.button('indir', type='secondary', icon=":material/download:")
                 
                 if downloadButton:
-                    pass
-                
-                # if self.stream_audio_options.get(self.audio_choice) != None and \
-                #     self.stream_video_options.get(self.video_choice) != None:
-                
-                
-                #     self.video_choice = self.stream_video_options.get(self.video_choice)
-                #     self.audio_choice = self.stream_audio_options.get(self.audio_choice)
-
-                    # self.download(self.video_choice,F"{os.getcwd()}/Video")
-                    # self.download(self.audio_choice,F"{os.getcwd()}/Audio")
+                    self.download(self.video_itag_choice,F"{os.getcwd()}/Video")
+                    self.download(self.audio_itag_choice,F"{os.getcwd()}/Audio")
 
                     # self.audio_video_join()
 
             
-            elif self.selection == "'mp3(ses)'":
+            elif self.selection == "mp3(ses)":
                 self.audio_options()
-                if self.stream_audio_options.get(self.audio_choice) != None:
-                    self.download(self.audio_choice,F"{os.getcwd()}/Audio")
-            else:
-                print("Yanlış Seçim")
-
+                self.audio_itag_choice = self.stream_audio_options.get(self.audio_choice)
+                downloadButton = st.button('indir', type='secondary', icon=":material/download:")
+                    
+                if downloadButton:
+                    self.download(self.audio_itag_choice, F"{os.getcwd()}/Audio")
+                    
+                
 uygulama = Application()
 uygulama.url_input()
 
