@@ -176,3 +176,7 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python
 
 YT\*
+
+*.mp3
+*.mp4
+*.webm

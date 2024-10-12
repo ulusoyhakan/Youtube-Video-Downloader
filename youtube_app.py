@@ -1,6 +1,7 @@
+from doctest import master
 from moviepy.editor import VideoFileClip,AudioFileClip
+from tkinter import Tk, filedialog
 from pytubefix import YouTube
-from time import time
 import streamlit as st
 import os
 import re
@@ -18,9 +19,11 @@ class youtube():
         except Exception as err:
             print("Bir hata oluştu!!", err)
 
+
     def youtube_object(self,_url):
         # YouTube nesnesi oluşturuyoruz ve bu nesneye indireceğimiz videonun adresini yazıyoruz
         self.youtube_ = YouTube(_url)
+
 
     def video_quality_options(self):
         "Video çözünürlük seçeneklerini tespit ediyoruz (webm formatı)"
@@ -39,6 +42,7 @@ class youtube():
         else:
             return self.stream_video_options
 
+
     def audio_quality_options(self):
         "Ses akış seçeneklerinin tespiti (webm formatı)"
 
@@ -56,10 +60,12 @@ class youtube():
         else:
             return self.stream_audio_options
 
-    def download(self,itag_,path_):
+
+    def download_(self,itag_,path_):
         self.stream = self.youtube_.streams.get_by_itag(itag_)
         self.stream.download(output_path=path_)
 
+        
     def audio_video_join(self):
         try:
             self.video_file_path = f"{os.getcwd()}\\Video\\{os.listdir("Video")[0]}"
@@ -81,13 +87,19 @@ class youtube():
             )
 
         except Exception as err:
-            print("Bir hata ouştu!!", err)
+                print("Bir hata ouştu!!", err)
         else:
             os.remove(self.video_file_path)
             os.remove(self.audio_file_path)
 
-        
 
+    def audio_to_mp3(self):
+        self.audio_file_path = f"{os.getcwd()}\\Audio\\{os.listdir("Audio")[0]}"
+        self.audio_clip = AudioFileClip(self.audio_file_path)
+        self.audio_clip.write_audiofile(F"hhh{self.youtube_.title}.mp3")
+        
+    
+    
 class Application(youtube):
     def __init__(self) -> None:
         super().__init__()
@@ -116,13 +128,15 @@ class Application(youtube):
                                          self.audio_quality_options().keys())
         return self.audio_choice
 
+
     def video_options(self):
         self.video_choice = st.selectbox("Video Kalite Ayarı",
                                          self.video_quality_options().keys())
         return self.video_choice
 
+
     def download_options(self): 
-            "indirilecek dosya türünün ve kalite ayarlarının seçimi"
+            """indirilecek dosya türünün,kalite ayarlarının ve dosyanın indirileceği dizinin seçimi"""
 
             self.selection = st.selectbox("Dosya İndirme Seçenekleri", ('mp4(video)', 'mp3(ses)'))
 
@@ -135,11 +149,10 @@ class Application(youtube):
                 downloadButton = st.button('indir', type='secondary', icon=":material/download:")
                 
                 if downloadButton:
-                    self.download(self.video_itag_choice,F"{os.getcwd()}/Video")
-                    self.download(self.audio_itag_choice,F"{os.getcwd()}/Audio")
+                    self.download_(self.video_itag_choice,F"{os.getcwd()}/Video")
+                    self.download_(self.audio_itag_choice,F"{os.getcwd()}/Audio")
 
-                    # self.audio_video_join()
-
+                    self.audio_video_join()
             
             elif self.selection == "mp3(ses)":
                 self.audio_options()
@@ -147,27 +160,9 @@ class Application(youtube):
                 downloadButton = st.button('indir', type='secondary', icon=":material/download:")
                     
                 if downloadButton:
-                    self.download(self.audio_itag_choice, F"{os.getcwd()}/Audio")
+                    self.download_(self.audio_itag_choice, F"{os.getcwd()}/Audio")
+                    self.audio_to_mp3()
                     
                 
 uygulama = Application()
 uygulama.url_input()
-
-
-# st.title("Youtube Video İndirici")
-# st_text_url = st.text_input("Video Adresini Giriniz ↓")
-# st.markdown('<p style="color:red;">girilen adres bir youtube linki değil!!</p>', unsafe_allow_html=True)
-# st_button = st.button("İNDİR" , key="indir")
-# secim = st.selectbox("Dosya İndirme Seçenekleri", ('mp4(video)', 'mp3(ses)'))
-
-
-
-# yout = YouTube("https://www.youtube.com/watch?v=2OPVViV-GQk")
-# st_video = yout.streams.filter(only_video=True)
-# print("Video Seçenekleri")
-# print(*st_video,sep="\n")
-
-# print("Ses Seçenekleri")
-# st_audio = yout.streams.filter(only_audio=True)
-# print(*st_audio, sep="\n")
-
