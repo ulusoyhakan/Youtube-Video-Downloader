@@ -1,6 +1,4 @@
-from doctest import master
 from moviepy.editor import VideoFileClip,AudioFileClip
-from tkinter import Tk, filedialog
 from pytubefix import YouTube
 import streamlit as st
 import os
@@ -96,8 +94,8 @@ class youtube():
     def audio_to_mp3(self):
         self.audio_file_path = f"{os.getcwd()}\\Audio\\{os.listdir("Audio")[0]}"
         self.audio_clip = AudioFileClip(self.audio_file_path)
-        self.audio_clip.write_audiofile(F"hhh{self.youtube_.title}.mp3")
-        
+        self.audio_clip.write_audiofile(F"{self.youtube_.title}.mp3")
+        os.remove(self.audio_file_path)
     
     
 class Application(youtube):
