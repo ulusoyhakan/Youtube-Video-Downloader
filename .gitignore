@@ -180,3 +180,6 @@ YT\*
 *.mp3
 *.mp4
 *.webm
+
+.vscode\
+.vscode\*
