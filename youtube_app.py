@@ -60,22 +60,28 @@ class youtube():
 
 
     def download_(self,itag_,path_):
+        # burda itag_ değeri youtube her dosyayı itag numarası ile tanımlar
+        # giridğimiz itag hangi dosyanın (ses,video) indirileceğini belirler
         self.stream = self.youtube_.streams.get_by_itag(itag_)
         self.stream.download(output_path=path_)
 
         
     def audio_video_join(self):
+        # indirme işlemi sonrasında kullanıcı mp4(video) seçeneğini seçti ise
+        # ses ve video (webm formatındaki) dosyalarının birleştirilme işlemi ↓
         try:
+            # ses ve video dosyalarının adresi alınır path bilgisi alınır
             self.video_file_path = f"{os.getcwd()}\\Video\\{os.listdir("Video")[0]}"
             self.audio_file_path = f"{os.getcwd()}\\Audio\\{os.listdir("Audio")[0]}"
             self.output_filename = "".join(os.listdir("Video")[0].split(".")[0:-1:1])+".mp4"
 
+            # dosya okuma işlemi işlemi sonrası video dosyasını ses dosyası ile birleştirip kayıt ediyoruz
             self.video_clip = VideoFileClip(self.video_file_path)
             self.audio_clip = AudioFileClip(self.audio_file_path)
         
             self.final_clip = self.video_clip.set_audio(self.audio_clip)
             self.final_clip.write_videofile(
-                self.output_filename,
+                self.output_filename,        # dosya kayıt adresi
                 codec="libx264",             # MP4 formatı için uygun video codec
                 audio_codec="aac",           # MP4 formatı için uygun ses codec
                 bitrate="5000k",             # Video bit hızı, daha yüksek değer daha yüksek kalite demektir
@@ -92,6 +98,7 @@ class youtube():
 
 
     def audio_to_mp3(self):
+        # indirilmek istenilen dosya ses(mp3) ise bunu webm formatından mp3 formatına çevirip kayıt ediyoruz 
         self.audio_file_path = f"{os.getcwd()}\\Audio\\{os.listdir("Audio")[0]}"
         self.audio_clip = AudioFileClip(self.audio_file_path)
         self.audio_clip.write_audiofile(F"{self.youtube_.title}.mp3")
@@ -110,18 +117,22 @@ class Application(youtube):
         # URL'nin desene uyup uymadığını kontrol et
         return bool(youtube_regex.match(url))
 
+
     def url_input(self):
+        # video url giriş alanı oluşturuluyor ve girilen değer bir youtube adresi ise 
+        # bir youtube objesi oluşturulup kullanıcıya indirme seçenekleri sunuluyor
         Url = st.text_input("Video Adresini Giriniz ↓")
         if self.is_youtube_url(Url):
             self.youtube_object(Url)
             self.download_options()
             st.video(Url)
-            
+        
+        # girilen değer bir youtube adresi değil ise kullanıcıya uyarı gösteriliyor
         elif Url and (not self.is_youtube_url(Url)):
             st.markdown('<p style="color:red;">girilen adres bir youtube linki değil!!</p>', unsafe_allow_html=True)
 
 
-    def audio_options(self): 
+    def audio_options(self):
         self.audio_choice = st.selectbox("Ses Kalite Ayarı",
                                          self.audio_quality_options().keys())
         return self.audio_choice
